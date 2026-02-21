@@ -16,18 +16,6 @@ const Admin = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const apiBase = getApiBase();
-    const offlineAdminPassword = import.meta.env.VITE_ADMIN_PASSWORD || "admin123";
-
-    const loginOffline = () => {
-        if (password === offlineAdminPassword) {
-            localStorage.setItem("admin-token", "local-admin");
-            setIsLoggedIn(true);
-            setPassword("");
-            return true;
-        }
-        setLoginError("Invalid password.");
-        return false;
-    };
 
     // Check if already logged in
     useEffect(() => {
@@ -40,13 +28,6 @@ const Admin = () => {
         setLoginError("");
         setIsLoading(true);
 
-        // Offline mode: allow local admin login when API is not configured.
-        if (!apiBase) {
-            loginOffline();
-            setIsLoading(false);
-            return;
-        }
-
         try {
             const res = await fetch(`${apiBase}/admin/login`, {
                 method: "POST",
@@ -55,12 +36,6 @@ const Admin = () => {
             });
 
             if (!res.ok) {
-                const contentType = res.headers.get("content-type") || "";
-                if (!contentType.includes("application/json")) {
-                    // API route is likely unavailable (frontend rewrite/html response).
-                    loginOffline();
-                    return;
-                }
                 const data = await res.json();
                 setLoginError(data.error || "Login failed.");
                 return;
@@ -71,11 +46,7 @@ const Admin = () => {
             setIsLoggedIn(true);
             setPassword("");
         } catch {
-            // Network/API failure: fallback to local admin mode.
-            const ok = loginOffline();
-            if (!ok) {
-                setLoginError("Server unreachable and offline password is invalid.");
-            }
+            setLoginError("Server unreachable. Please check Vercel API + KV configuration.");
         } finally {
             setIsLoading(false);
         }
