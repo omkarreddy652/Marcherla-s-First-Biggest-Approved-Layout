@@ -16,6 +16,7 @@ const Admin = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const apiBase = getApiBase();
+    const offlineAdminPassword = import.meta.env.VITE_ADMIN_PASSWORD || "admin123";
 
     // Check if already logged in
     useEffect(() => {
@@ -27,6 +28,19 @@ const Admin = () => {
         e.preventDefault();
         setLoginError("");
         setIsLoading(true);
+
+        // Offline mode: allow local admin login when API is not configured.
+        if (!apiBase) {
+            if (password === offlineAdminPassword) {
+                localStorage.setItem("admin-token", "local-admin");
+                setIsLoggedIn(true);
+                setPassword("");
+            } else {
+                setLoginError("Invalid password.");
+            }
+            setIsLoading(false);
+            return;
+        }
 
         try {
             const res = await fetch(`${apiBase}/admin/login`, {
