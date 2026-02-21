@@ -1,5 +1,6 @@
 import { MapPin, Shield, Award, Phone } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import { CONTACT_PHONE } from "@/constants/contact";
 
 interface HeroSectionProps {
   total: number;
@@ -90,7 +91,7 @@ const HeroSection = ({ total, sold, available, hold }: HeroSectionProps) => {
             <Award className="h-3.5 w-3.5 text-gold" />
             <span className="font-body text-xs font-medium text-primary-foreground/80">183 Premium Plots</span>
           </div>
-          <a href="tel:+919866606806" className="flex items-center gap-1.5 rounded-full gradient-gold px-4 py-2 shadow-gold transition-transform hover:scale-105">
+          <a href={`tel:${CONTACT_PHONE.tel}`} className="flex items-center gap-1.5 rounded-full gradient-gold px-4 py-2 shadow-gold transition-transform hover:scale-105">
             <Phone className="h-3.5 w-3.5 text-accent-foreground" />
             <span className="font-body text-xs font-bold text-accent-foreground">Contact Us</span>
           </a>

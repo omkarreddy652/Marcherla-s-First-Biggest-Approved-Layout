@@ -4,6 +4,7 @@ import HeroSection from "@/components/HeroSection";
 import PlotCard from "@/components/PlotCard";
 import { usePlots } from "@/hooks/use-plots";
 import approvedLayoutLogo from "@/assets/image.png";
+import { CONTACT_PHONE } from "@/constants/contact";
 
 const Index = () => {
   const { plots } = usePlots();
@@ -69,7 +70,7 @@ const Index = () => {
               <span className="hidden sm:inline">Admin</span>
             </a>
             <a
-              href="tel:+919866606806"
+              href={`tel:${CONTACT_PHONE.tel}`}
               className="flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-lg transition-transform hover:scale-105 active:scale-95"
             >
               <Phone className="h-3.5 w-3.5" />
@@ -174,11 +175,11 @@ const Index = () => {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <a
-                href="tel:+919866606806"
+                href={`tel:${CONTACT_PHONE.tel}`}
                 className="flex items-center gap-2 rounded-xl bg-white px-8 py-4 font-bold text-primary transition-transform hover:scale-105"
               >
                 <Phone className="h-5 w-5" />
-                +91 98666 06806
+                {CONTACT_PHONE.display}
               </a>
               <a
                 href="mailto:manojpammi9515@gmail.com"
