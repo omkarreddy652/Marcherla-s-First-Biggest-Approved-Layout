@@ -14,7 +14,7 @@ const buildQuery = (q?: Record<string, string | number | undefined>) => {
   return s ? `?${s}` : "";
 };
 
-export async function apiFetch<T = any>(path: string, opts: FetchOptions = {}): Promise<T> {
+export async function apiFetch<T = unknown>(path: string, opts: FetchOptions = {}): Promise<T> {
   const base = getApiBase();
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
 
