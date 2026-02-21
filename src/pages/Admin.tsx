@@ -18,6 +18,17 @@ const Admin = () => {
     const apiBase = getApiBase();
     const offlineAdminPassword = import.meta.env.VITE_ADMIN_PASSWORD || "admin123";
 
+    const loginOffline = () => {
+        if (password === offlineAdminPassword) {
+            localStorage.setItem("admin-token", "local-admin");
+            setIsLoggedIn(true);
+            setPassword("");
+            return true;
+        }
+        setLoginError("Invalid password.");
+        return false;
+    };
+
     // Check if already logged in
     useEffect(() => {
         const token = localStorage.getItem("admin-token");
@@ -31,13 +42,7 @@ const Admin = () => {
 
         // Offline mode: allow local admin login when API is not configured.
         if (!apiBase) {
-            if (password === offlineAdminPassword) {
-                localStorage.setItem("admin-token", "local-admin");
-                setIsLoggedIn(true);
-                setPassword("");
-            } else {
-                setLoginError("Invalid password.");
-            }
+            loginOffline();
             setIsLoading(false);
             return;
         }
@@ -50,6 +55,12 @@ const Admin = () => {
             });
 
             if (!res.ok) {
+                const contentType = res.headers.get("content-type") || "";
+                if (!contentType.includes("application/json")) {
+                    // API route is likely unavailable (frontend rewrite/html response).
+                    loginOffline();
+                    return;
+                }
                 const data = await res.json();
                 setLoginError(data.error || "Login failed.");
                 return;
@@ -60,7 +71,11 @@ const Admin = () => {
             setIsLoggedIn(true);
             setPassword("");
         } catch {
-            setLoginError("Server unreachable. Is the backend running?");
+            // Network/API failure: fallback to local admin mode.
+            const ok = loginOffline();
+            if (!ok) {
+                setLoginError("Server unreachable and offline password is invalid.");
+            }
         } finally {
             setIsLoading(false);
         }

@@ -14,6 +14,17 @@ export const usePlots = () => {
   const apiBase = getApiBase();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const toggleLocally = useCallback((id: number) => {
+    setPlots((prev) => {
+      const cycle = { available: "sold", sold: "hold", hold: "not-for-sale", "not-for-sale": "available" } as const;
+      const updated = prev.map((p) =>
+        p.id === id ? { ...p, status: cycle[p.status] || "available" } : p
+      ) as Plot[];
+      localStorage.setItem("marcherla-plots", JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
   // Fetch plots from backend
   const fetchPlots = useCallback(async () => {
     if (!apiBase) return;
@@ -49,14 +60,7 @@ export const usePlots = () => {
     async (id: number) => {
       if (!apiBase) {
         // Offline mode: cycle locally
-        setPlots((prev) => {
-          const cycle = { available: "sold", sold: "hold", hold: "not-for-sale", "not-for-sale": "available" } as const;
-          const updated = prev.map((p) =>
-            p.id === id ? { ...p, status: cycle[p.status] || "available" } : p
-          ) as Plot[];
-          localStorage.setItem("marcherla-plots", JSON.stringify(updated));
-          return updated;
-        });
+        toggleLocally(id);
         return;
       }
 
@@ -64,6 +68,12 @@ export const usePlots = () => {
       const token = localStorage.getItem("admin-token");
       if (!token) {
         console.warn("No admin token found. Toggle requires admin login.");
+        return;
+      }
+
+      // Logged in via local fallback mode.
+      if (token === "local-admin") {
+        toggleLocally(id);
         return;
       }
 
@@ -86,9 +96,11 @@ export const usePlots = () => {
         });
       } catch (e) {
         console.error("Failed to toggle plot:", e);
+        // If backend call fails, keep admin panel usable in local mode.
+        toggleLocally(id);
       }
     },
-    [apiBase]
+    [apiBase, toggleLocally]
   );
 
   return { plots, setPlots, togglePlot, fetchPlots } as const;
