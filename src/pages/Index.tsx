@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, LayoutGrid, Phone, Mail, MapPin } from "lucide-react";
+import { Search, LayoutGrid, Phone, Mail, MapPin, Lock } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import PlotCard from "@/components/PlotCard";
 import { usePlots } from "@/hooks/use-plots";
@@ -60,13 +60,22 @@ const Index = () => {
             </div>
           </div>
 
-          <a
-            href="tel:+919866606806"
-            className="flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-lg transition-transform hover:scale-105 active:scale-95"
-          >
-            <Phone className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Enquire Now</span>
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href="/admin"
+              className="flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2.5 text-xs font-bold text-foreground transition-colors hover:bg-muted"
+            >
+              <Lock className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Admin</span>
+            </a>
+            <a
+              href="tel:+919866606806"
+              className="flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-lg transition-transform hover:scale-105 active:scale-95"
+            >
+              <Phone className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Enquire Now</span>
+            </a>
+          </div>
         </div>
       </header>
 
