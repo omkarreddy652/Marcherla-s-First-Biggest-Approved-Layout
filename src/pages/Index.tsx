@@ -174,7 +174,7 @@ const Index = () => {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <a
-                href="tel:+917675063336"
+                href="tel:+919866606806"
                 className="flex items-center gap-2 rounded-xl bg-white px-8 py-4 font-bold text-primary transition-transform hover:scale-105"
               >
                 <Phone className="h-5 w-5" />
